@@ -131,3 +131,6 @@ dmypy.json
 
 #kivy
 kivy_venv/
+
+#mynotes
+.notes.txt
