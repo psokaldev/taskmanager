@@ -130,4 +130,4 @@ dmypy.json
 
 
 #kivy
-kivy_venv
+kivy_venv/
