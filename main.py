@@ -7,7 +7,7 @@ Created on Sun Jan 19 20:41:09 2020
 
 import kivy
 import random
-
+from backend.resources import task
 
 from kivy.app import App
 from kivy.uix.button import Button
@@ -32,5 +32,6 @@ class HBoxLayoutExample(App):
         return layout
 
 if __name__ == "__main__":
-    app = HBoxLayoutExample()
-    app.run()
+    #app = HBoxLayoutExample()
+    #app.run()
+    t = task.Task().new("test","descritdgsdgf","2h","2019-01-31",True)
