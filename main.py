@@ -4,7 +4,7 @@ Created on Sun Jan 19 20:41:09 2020
 
 @author: DEV
 """
-
+import time
 import kivy
 import random
 from backend.resources import task
@@ -34,4 +34,11 @@ class HBoxLayoutExample(App):
 if __name__ == "__main__":
     #app = HBoxLayoutExample()
     #app.run()
-    t = task.Task().new("test","descritdgsdgf","2h","2019-01-31",True)
+    
+    task.Task().new("test","descritdgsdgf","2h","2019-01-31",True)
+    time.sleep(2)
+    t = task.Task()
+    t.new("test","descritdgssasasasadgf","2h","2019-01-31",True)
+    time.sleep(2)
+    t.update('desc','dgdfhgdsgsdgfsadgsadgfassfaswfa')
+    t.commit()
