@@ -9,6 +9,8 @@ import csv
 
 import shutil
 TASK_FILE_NAME = "tasks.csv"
+REG_FILE = "registry.csv"
+DATE_FORMAT = "%d/%m/%Y %H:%M:%S"
 class Task:
     def __init__(self):
         self._loaded = False
@@ -19,8 +21,8 @@ class Task:
                       'desc':desc,
                       'req_time':required_time,
                       'deadline':deadline,
-                      'reg_date':datetime.now().strftime("%d/%m/%Y %H:%M:%S"),
-                      'last_update': datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+                      'reg_date':datetime.now().strftime(DATE_FORMAT),
+                      'last_update': datetime.now().strftime(DATE_FORMAT)
                       }
         self._loaded = True
         self._toupdate = False
@@ -34,7 +36,7 @@ class Task:
         return self._JSON[name]
     def commit(self):
         if self._toupdate:
-            self._JSON['last_update'] = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+            self._JSON['last_update'] = datetime.now().strftime(DATE_FORMAT)
             with open(TASK_FILE_NAME, 'r', newline='') as readFile, open(TASK_FILE_NAME.replace('.csv', '_new.csv'), 'w', newline='') as f: 
                 for row in readFile:
                     if row.split(";")[0] == self._JSON['ID']:
@@ -59,7 +61,21 @@ class Task:
             f.write(";".join(nrow)+ '\n')
 
 
-class Tasks():
+class Event:
+    def __init__(self, task_id):
+        self._task_id = task_id
+        self._start_time = datetime.now().strftime(DATE_FORMAT)
+    def stop(self):
+        self._end_time = datetime.now().strftime(DATE_FORMAT)
+        with open(REG_FILE, "a+", newline='') as f:
+            if f.tell() == 0:
+                f.write(";".join(["task_id","start_time","end_time","duration"])+"\n")
+            f.write(";".join([self._task_id,self._start_time,self._end_time,str(self._date_diff_sec(self._start_time,self._end_time))])+"\n")
+    def _date_diff_sec(self, st, ed):
+        _ed = datetime.strptime(ed,DATE_FORMAT)
+        _st = datetime.strptime(st,DATE_FORMAT)
+        return int((_ed-_st).total_seconds())
+class Tasks:
     def __init__(self):
         self._loaded = False
     def load_by_date(self, date):

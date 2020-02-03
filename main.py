@@ -42,8 +42,13 @@ if __name__ == "__main__":
     #time.sleep(2)
     #t.update('desc','dgdfhgdsgsdgfsadgsadgfassfaswfa')
     #t.commit()
-    t = task.Tasks()
-    t.load_by_date('2019-01-31')
-    g = t.get()
-    for g_ in g:
-        print(', '.join([g_['ID'],g_['name'],g_['info']['desc']]))
+    #t = task.Tasks()
+    #t.load_by_date('2019-01-31')
+    #g = t.get()
+    #for g_ in g:
+        #print(', '.join([g_['ID'],g_['name'],g_['info']['desc']]))
+    e = task.Event("20200123205728")
+    time.sleep(4)
+    e.stop()
+    
+    
