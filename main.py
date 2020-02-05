@@ -47,8 +47,14 @@ if __name__ == "__main__":
     #g = t.get()
     #for g_ in g:
         #print(', '.join([g_['ID'],g_['name'],g_['info']['desc']]))
-    e = task.Event("20200123205728")
-    time.sleep(4)
-    e.stop()
+    #e = task.Event("20200123205728")
+    #time.sleep(4)
+    #e.stop()
+    t = task.Task()
+    t.load(20200123205730)
+    t.print_()
+    t.crossout()
+    
+    
     
     
