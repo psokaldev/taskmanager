@@ -114,10 +114,10 @@ class Event:
 
 
 class Tasks:
-    def __init__(self):
+    def __init__(self,**kwargs):
         self._loaded = False
-    def load_by_date(self, date):
         self._tasks = []
+    def load_by_date(self, date):
         with open(TASK_FILE_NAME,'r',newline='') as f:
             r = csv.DictReader(f,delimiter = ";")
             for row in r:

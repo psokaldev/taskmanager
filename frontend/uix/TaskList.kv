@@ -1,0 +1,24 @@
+<TaskList>
+    MDBanner:
+        id: banner
+        over_widget: scroll
+    MDToolbar:
+        id: toolbar
+        title: app.title
+        md_bg_color: app.theme_cls.primary_color
+        elevation: 10
+        left_action_items: [["dots-vertical", lambda x: None]]
+        pos_hint: {"top": 1} 
+    ScrollView:
+        id: scroll
+        size_hint_y: None
+        do_scroll_x: False
+        height: root.height - toolbar.height
+        GridLayout:
+            height: self.minimum_height
+            id: gs
+            cols: 1
+            size_hint_y: None
+            padding: "10dp"
+            spacing: "10dp"
+        
