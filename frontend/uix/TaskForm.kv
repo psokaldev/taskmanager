@@ -1,0 +1,58 @@
+<TaskForm>
+    MDBanner:
+        id: banner
+        over_widget: scroll
+    
+    MDToolbar:
+        id: toolbar
+        title: "New task"
+        md_bg_color: app.theme_cls.primary_color
+        elevation: 10
+        right_action_items: [["plus", lambda x: None]]
+        pos_hint: {"top": 1} 
+    
+    ScrollView:
+        id: scroll
+        size_hint_y: None
+        do_scroll_x: False
+        height: root.height - toolbar.height
+        
+        task_name: task_name
+        task_desc: task_desc
+        required_time: required_time
+        deadline: deadline
+        
+        GridLayout:
+            size_hint_y: None
+            height: self.minimum_height
+            padding: dp(48)
+            spacing: 10
+            cols: 1
+            
+            MDTextField:
+                id: task_name
+                hint_text: "Task name"
+                helper_text: "Text is always here"
+                helper_text_mode: "persistent"
+            MDTextField:
+                id: task_desc
+                hint_text: "Task description"
+                multiline: True
+            MDTextField:
+                id: required_time
+                hint_text: "Time required to complete - minutes/hour/days(8h)"
+                helper_text: "Xm / Xh / Xd"
+                helper_text_mode: "persistent"
+            
+            MDTextField:
+                id: deadline
+                hint_text: "Deadline"
+                helper_text: "YYYY-MM-DD"
+                helper_text_mode: "persistent"
+            
+            MDFillRoundFlatButton:
+                text: "Save"
+                pos_hint: {"center_x": .5}
+                on_release: 
+                    if task_name.text != "": app.save_task(task_name.text,task_desc.text,required_time.text,deadline.text) 
+            

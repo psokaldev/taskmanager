@@ -7,7 +7,7 @@ Created on Sun Jan 19 20:41:09 2020
 import time
 import kivy
 import random
-from backend.resources import task
+from backend.resources.task import Tasks, Task
 import os
 from kivymd.app import MDApp
 from kivy.factory import Factory
@@ -15,38 +15,49 @@ from kivy.lang import Builder
 from kivy.uix.boxlayout import BoxLayout
 from kivymd.uix.list import TwoLineListItem
 from kivy.uix.screenmanager import Screen, ScreenManager
+from kivy.properties import StringProperty
+
 
 class TaskListElement(TwoLineListItem):
-    def __init__(self, **kwargs):
-        super(TaskListElement,self).__init__(**kwargs)
+    pass
 class TaskList(Screen):
+    pass
+class TaskForm(Screen):
     pass
 class MainWindow(Screen):
     pass
 class SManager(ScreenManager):
     pass
-class TaskApp(MDApp,task.Tasks):
+
+class TaskApp(MDApp,Tasks):
     Builder.load_file('frontend/uix/MainWindow.kv')
     Builder.load_file('frontend/uix/TaskList.kv')
-    Builder.load_file('frontend/uix/TaskListElement.kv')
+    Builder.load_file('frontend/uix/TaskForm.kv')
+    #Builder.load_file('frontend/uix/TaskListElement.kv')
     def __init__(self,**kwargs):
         self.title = "Task application"
         self.theme_cls.primary_palette = "DeepPurple"
         super().__init__(**kwargs)
-        self.load_by_date('2019-01-31')
+        
     def build(self, **kwargs):
         self.root  = ScreenManager()
         self.root.add_widget(MainWindow(name="main"))
         self.root.add_widget(TaskList(name="task_list"))
+        self.root.add_widget(TaskForm(name="task_form"))
         self.root.current = "main"
         
         
     def show_task_list(self):
+        self.load_by_date('2019-01-31')
         self.root.current = "task_list"
-        for i in range(10):
-            for t in self._tasks:
-                self.root.current_screen.ids.gs.add_widget(TwoLineListItem(
+        for t in self._tasks:
+            self.root.current_screen.ids.gs.add_widget(TwoLineListItem(
                     text = t['name'],secondary_text = t['ID']))
+    def add_new_task(self):
+        self.root.current = "task_form"
+    def save_task(self,name, desc,required_time, deadline):
+        Task().new(name, desc,required_time, deadline,True)
+        self.root.current = "task_list"
 if __name__ == "__main__":
     #app = HBoxLayoutExample()
     #app.run()
