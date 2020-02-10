@@ -24,7 +24,9 @@ class Task:
         self._JSON = {}
         
         
-    def crossout(self):
+    def crossout(self, task_id = 0):
+        if not self._loaded and task_id > 0:
+            self.load(task_id)
         if self._loaded == True:
             self._JSON['last_update'] = _currentTimeStamp()
             self._replacerow("")
@@ -33,6 +35,12 @@ class Task:
                 if f.tell() == 0:
                     w.writeheader()
                 w.writerow(self._JSON)
+            return True
+        return False
+    
+    
+    
+    
     
     def load(self,task_id):
         with open(TASK_FILE_NAME,'r',newline='') as f:
