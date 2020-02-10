@@ -33,7 +33,7 @@ class Task:
                 if f.tell() == 0:
                     w.writeheader()
                 w.writerow(self._JSON)
-    
+        
     def load(self,task_id):
         with open(TASK_FILE_NAME,'r',newline='') as f:
             r = csv.DictReader(f,delimiter = ";")
@@ -97,21 +97,26 @@ class Task:
             f.write(";".join(nrow)+ '\n')
 
 
-class Event:
+class Activity:
     def __init__(self, task_id):
         self._task_id = task_id
         self._start_time = datetime.now().strftime(DATE_FORMAT)
+        self._comment - ''
+    def leave_comment(self,comment):
+        self._comment = comment
+        
     def stop(self):
         self._end_time = datetime.now().strftime(DATE_FORMAT)
         with open(REG_FILE, "a+", newline='') as f:
             if f.tell() == 0:
-                f.write(";".join(["task_id","start_time","end_time","duration"])+"\n")
-            f.write(";".join([self._task_id,self._start_time,self._end_time,str(self._date_diff_sec(self._start_time,self._end_time))])+"\n")
+                f.write(";".join(["task_id","start_time","end_time","duration",'comment'])+"\n")
+            f.write(";".join([self._task_id,self._start_time,self._end_time,str(self._date_diff_sec(self._start_time,self._end_time)),self._comment])+"\n")
     def _date_diff_sec(self, st, ed):
         _ed = datetime.strptime(ed,DATE_FORMAT)
         _st = datetime.strptime(st,DATE_FORMAT)
         return int((_ed-_st).total_seconds())
-
+    
+    
 
 class Tasks:
     def __init__(self,**kwargs):
@@ -127,11 +132,25 @@ class Tasks:
                                          'info':{a:row[a] for a in row.keys() if a not in ['ID','name']}
                                          })
         self._loaded = True
+    def load_by_name(self, name):
+        with open(TASK_FILE_NAME,'r',newline='') as f:
+            r = csv.DictReader(f,delimiter = ";")
+            for row in r:
+                if str(row['name']) == name:
+                    self._tasks.append( {'ID':row['ID'],
+                                         'name':row['name'],
+                                         'info':{a:row[a] for a in row.keys() if a not in ['ID','name']}
+                                         })
+        self._loaded = True
+   
     def get(self):
         if self._loaded:
             return self._tasks
-                    
-        
+    def get_todays_tasks(self):
+        dt = datetime.strptime(datetime.now(),'%Y-%m-%d')               
+        self.load_by_date(dt)
+        if self._loaded:
+            return self.get()
         
         
         
