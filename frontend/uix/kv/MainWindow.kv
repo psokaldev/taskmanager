@@ -1,22 +1,22 @@
-<TaskList>
+<MainWindow>
     MDBanner:
-        id: banner
-        over_widget: scroll
+        id: banners
+        over_widget: scrolls
     MDToolbar:
-        id: toolbar
+        id: toolbars
         title: app.title
         md_bg_color: app.theme_cls.primary_color
         elevation: 10
-        right_action_items: [["plus", lambda x: app.add_new_task()]]
+        right_action_items: [["magnify", lambda x: app.show_task_list()],["plus", lambda x: app.add_new_task()]]
         pos_hint: {"top": 1} 
     ScrollView:
-        id: scroll
+        id: scrolls
         size_hint_y: None
         do_scroll_x: False
-        height: root.height - toolbar.height
+        height: root.height - toolbars.height
         GridLayout:
             height: self.minimum_height
-            id: gs
+            id: task_list
             cols: 1
             size_hint_y: None
             padding: "10dp"

@@ -8,7 +8,7 @@
         title: "New task"
         md_bg_color: app.theme_cls.primary_color
         elevation: 10
-        right_action_items: [["plus", lambda x: None]]
+        left_action_items: [["backspace", lambda x: app.show_task_list()]]
         pos_hint: {"top": 1} 
     
     ScrollView:

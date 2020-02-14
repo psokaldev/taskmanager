@@ -127,6 +127,7 @@ class Tasks:
         self._loaded = False
         self._tasks = []
     def load_by_date(self, date):
+        self._clear_tasks()
         with open(TASK_FILE_NAME,'r',newline='') as f:
             r = csv.DictReader(f,delimiter = ";")
             for row in r:
@@ -137,6 +138,7 @@ class Tasks:
                                          })
         self._loaded = True
     def load_by_name(self, name):
+        self._clear_tasks()
         with open(TASK_FILE_NAME,'r',newline='') as f:
             r = csv.DictReader(f,delimiter = ";")
             for row in r:
@@ -147,15 +149,21 @@ class Tasks:
                                          })
         self._loaded = True
    
+    def _clear_tasks(self):
+        if self._loaded:
+            self._tasks = []
+            self._loaded = False
     def get(self):
         if self._loaded:
             return self._tasks
-    def get_todays_tasks(self):
-        dt = datetime.strptime(datetime.now(),'%Y-%m-%d')               
+    
+    def load_todays_tasks(self):
+        self._clear_tasks()
+        dt = datetime.now().strftime('%Y-%m-%d')
         self.load_by_date(dt)
-        if self._loaded:
-            return self.get()
         
+
+
         
         
         
