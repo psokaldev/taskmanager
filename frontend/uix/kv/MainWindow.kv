@@ -7,7 +7,7 @@
         title: app.title
         md_bg_color: app.theme_cls.primary_color
         elevation: 10
-        right_action_items: [["magnify", lambda x: app.show_task_list()],["plus", lambda x: app.add_new_task()]]
+        right_action_items: [["magnify", lambda x: app.search_for_tasks()],["plus", lambda x: app.add_new_task()]]
         pos_hint: {"top": 1} 
     ScrollView:
         id: scrolls

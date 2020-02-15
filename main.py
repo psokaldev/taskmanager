@@ -7,7 +7,7 @@ Created on Sun Jan 19 20:41:09 2020
 #import time
 #import kivy
 #import random
-from backend.resources.task import Tasks, Task
+from backend.resources.task import Tasks#, Task
 #import os
 from kivymd.app import MDApp
 #from kivy.factory import Factory
@@ -19,6 +19,8 @@ from kivy.uix.screenmanager import Screen, ScreenManager
 #from kivy.properties import StringProperty
 #from kivy.properties import ObjectProperty
 from frontend.uix.TaskItem import TaskItem, TaskCard
+from frontend.uix.DatePicker import DatePicker
+from backend.resources.db import DB, Task
 class TaskListElement(TwoLineListItem):
     pass
 class TaskList(Screen):
@@ -32,7 +34,7 @@ class SManager(ScreenManager):
 #class TaskCard(BoxLayout):
     #pass
 
-class TaskApp(MDApp,Tasks):
+class TaskApp(MDApp,Tasks,DB):
     Builder.load_file('frontend/uix/kv/MainWindow.kv')
     Builder.load_file('frontend/uix/kv/TaskList.kv')
     Builder.load_file('frontend/uix/kv/TaskForm.kv')
@@ -42,7 +44,7 @@ class TaskApp(MDApp,Tasks):
         self.title = "Task application"
         self.theme_cls.primary_palette = "DeepPurple"
         super().__init__(**kwargs)
-        
+        self.db = DB(dbtype='sqlite',dbname='database.db')
     def build(self, **kwargs):
         self.root  = ScreenManager()
         self.root.add_widget(MainWindow(name="main"))
@@ -56,10 +58,14 @@ class TaskApp(MDApp,Tasks):
         self.clear_task_list()
         self.load_todays_tasks()
         self.print_task_list()
-    def show_task_list(self):
+    def search_for_tasks(self):
+        self.root.current_screen.add_widget(DatePicker())
+    
+    def show_task_list(self, date):
+        self.root.current_screen.remove_widget(self.root.ids.dp)
         self.root.current = "task_list"
         self.clear_task_list()
-        self.load_by_date('2019-01-31')
+        self.load_by_date(str(date))
         self.print_task_list()
         
     def print_task_list(self):
@@ -73,34 +79,9 @@ class TaskApp(MDApp,Tasks):
     def clear_task_list(self):
         self.root.current_screen.ids.task_list.clear_widgets()
     def save_task(self,name, desc,required_time, deadline):
-        Task().new(name, desc,required_time, deadline,True)
+        self.db.add(Task(name, desc,required_time, deadline))
         self.root.current = "task_list"
 if __name__ == "__main__":
-    #app = HBoxLayoutExample()
-    #app.run()
     TaskApp().run()
-#def getMe():
-    #return TaskApp()
-    #task.Task().new("test","descritdgsdgf","2h","2019-01-31",True)
-    #time.sleep(2)
-    #t = task.Task()
-    #t.new("test","descritdgssasasasadgf","2h","2019-01-31",True)
-    #time.sleep(2)
-    #t.update('desc','dgdfhgdsgsdgfsadgsadgfassfaswfa')
-    #t.commit()
-    #t = task.Tasks()
-    #t.load_by_date('2019-01-31')
-    #g = t.get()
-    #for g_ in g:
-        #print(', '.join([g_['ID'],g_['name'],g_['info']['desc']]))
-    #e = task.Event("20200123205728")
-    #time.sleep(4)
-    #e.stop()
-    #t = task.Task()
-    #t.load(20200123205730)
-    #t.print_()
-    #t.crossout()
-    
-    
-    
-    
+
+
