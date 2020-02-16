@@ -14,8 +14,7 @@ from datetime import date
 Builder.load_string(
     """
 <DatePicker>    
-    size_hint_y: 0.8
-    id: dp
+    size_hint_y:0.8
     AnchorLayout:
         anchor_x:'center'
         anchor_y:'center'
@@ -31,7 +30,7 @@ Builder.load_string(
                 on_release: root.show_calendar()
         MDRoundFlatButton:
             text: "Search"
-            on_press: app.show_task_list(root.date_given)
+            on_press: app.show_task_list(date_field.text)
 """
 )
 
@@ -43,5 +42,6 @@ class DatePicker(FloatLayout):
     def show_calendar(self):
         MDDatePicker(self.set_previous_date).open()
     def set_previous_date(self, date_obj):
-        self.previous_date = date_obj
+        self.date_given = date_obj
         self.ids.date_field.text = str(date_obj)
+    

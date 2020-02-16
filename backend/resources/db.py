@@ -58,22 +58,32 @@ class Task(Base):
     activities = relationship(Activity,backref='tasks')
     notes = relationship(Note,backref='tasks')
     
-    def __init__(self,name, description,required_time,deadline):
+    def __init__(self,
+                 name, 
+                 description,
+                 required_time,
+                 deadline,
+                 registered= datetime.now(),
+                 last_update=datetime.now()):
         self.name = name
         self.description = description
         self.required_time = required_time
-        self.deadline = datetime.strptime(deadline, '%Y-%m-%d')#.strftime(DATE_FORMAT)
-        self.registered= datetime.now() #.strftime(DATE_FORMAT)
-        self.last_update = self.registered
+
+        if isinstance(deadline, str):
+            self.deadline = datetime.strptime(deadline, '%Y-%m-%d')#.strftime(DATE_FORMAT)
+        else:
+            self.deadline = deadline
+        self.registered= registered #.strftime(DATE_FORMAT)
+        self.last_update = last_update
     
     def serialize(self):
         return {'id': self.id,
                 'name': self.name,
                 'description': self.description,
                 'required_time': self.required_time,
-                'deadline': self.deadline,
-                'registered': self.registered,
-                'last_update': self.last_update
+                'deadline': self.deadline.strftime('%Y-%m-%d'),
+                'registered': self.registered.strftime(DATE_FORMAT),
+                'last_update': self.last_update.strftime(DATE_FORMAT)
                 }
        
 class DB():
@@ -95,6 +105,16 @@ class DB():
     def add(self,obj):
         self.session.add(obj)
         self.session.commit()
+        
+    def get_tasks_by_deadline(self,
+                deadline=datetime.now().strftime('%Y-%m-%d')):
+        query = self.session.query(Task).filter_by(deadline=deadline)
+        tasks = []
+        if query.count() > 0:
+            for t in query.all():
+                tasks.append(t.serialize())
+        print(tasks)
+        return tasks
     def create_all_tables(self):
         Base.metadata.create_all(self.db_engine)
 

@@ -7,7 +7,7 @@ Created on Sun Jan 19 20:41:09 2020
 #import time
 #import kivy
 #import random
-from backend.resources.task import Tasks#, Task
+#from backend.resources.task import Tasks#, Task
 #import os
 from kivymd.app import MDApp
 #from kivy.factory import Factory
@@ -15,6 +15,7 @@ from kivy.lang import Builder
 #from kivy.uix.boxlayout import BoxLayout
 from kivymd.uix.list import TwoLineListItem
 from kivymd.toast import toast
+from datetime import datetime
 from kivy.uix.screenmanager import Screen, ScreenManager
 #from kivy.properties import StringProperty
 #from kivy.properties import ObjectProperty
@@ -34,10 +35,12 @@ class SManager(ScreenManager):
 #class TaskCard(BoxLayout):
     #pass
 
-class TaskApp(MDApp,Tasks,DB):
+class TaskApp(MDApp):
     Builder.load_file('frontend/uix/kv/MainWindow.kv')
     Builder.load_file('frontend/uix/kv/TaskList.kv')
     Builder.load_file('frontend/uix/kv/TaskForm.kv')
+    _tasks=[]
+    float_box = None
     def toast(self,text):
         toast(text)
     def __init__(self,**kwargs):
@@ -56,24 +59,24 @@ class TaskApp(MDApp,Tasks,DB):
     def main_window(self):
         self.root.current = "main"
         self.clear_task_list()
-        self.load_todays_tasks()
+        self._tasks=self.db.get_tasks_by_deadline()
         self.print_task_list()
     def search_for_tasks(self):
-        self.root.current_screen.add_widget(DatePicker())
-    
+        self.float_box= DatePicker()
+        self.root.current_screen.add_widget(self.float_box)
     def show_task_list(self, date):
-        self.root.current_screen.remove_widget(self.root.ids.dp)
+        self.root.current_screen.remove_widget(self.float_box)
         self.root.current = "task_list"
         self.clear_task_list()
-        self.load_by_date(str(date))
+        self._tasks=self.db.get_tasks_by_deadline(str(date))
         self.print_task_list()
         
     def print_task_list(self):
         for t in self._tasks:
             self.root.current_screen.ids.task_list.add_widget(TaskItem(
-                    content=TaskCard(description=t['info']['desc'],required_time =t['info']['req_time']),
+                    content=TaskCard(description=t['description'],required_time =t['required_time']),
                     title = t['name'], 
-                    secondary= t['info']['deadline']))
+                    secondary= t['deadline']))
     def add_new_task(self):
         self.root.current = "task_form"
     def clear_task_list(self):
@@ -81,7 +84,9 @@ class TaskApp(MDApp,Tasks,DB):
     def save_task(self,name, desc,required_time, deadline):
         self.db.add(Task(name, desc,required_time, deadline))
         self.root.current = "task_list"
+
 if __name__ == "__main__":
     TaskApp().run()
+
 
 
